@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Logparser
+Bundle-SymbolicName: cz.martinbayer.logparser
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: cz.martinbayer.logparser.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: cz.martinbayer.analyser.impl,
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: cz.martinbayer.logparser.fileshandler,
+ cz.martinbayer.logparser.logic
