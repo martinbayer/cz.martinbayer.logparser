@@ -27,6 +27,7 @@ public class LogFileReader implements Runnable {
 
 	@Override
 	public void run() {
+		reset();
 		for (File logFile : this.filesToRead) {
 			System.out.println("File analysis started:" + logFile.getName());
 			try (FileChannel fileChannel = new RandomAccessFile(logFile, "r")
@@ -48,5 +49,9 @@ public class LogFileReader implements Runnable {
 			}
 		}
 		this.semaphore.stop();
+	}
+
+	private void reset() {
+		this.sb.delete(0, this.sb.length());
 	}
 }

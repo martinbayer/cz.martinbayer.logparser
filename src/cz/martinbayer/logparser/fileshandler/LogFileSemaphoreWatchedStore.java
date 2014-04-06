@@ -46,6 +46,14 @@ public class LogFileSemaphoreWatchedStore {
 		}
 	}
 
+	public void reset() {
+		synchronized (this) {
+			this.signalsCount = 0;
+			this.stopped = false;
+			this.storedBuffer.delete(0, this.storedBuffer.length());
+		}
+	}
+
 	public void stop() {
 		synchronized (this) {
 			this.stopped = true;
