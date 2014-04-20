@@ -9,4 +9,6 @@ Import-Package: cz.martinbayer.analyser.impl,
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: cz.martinbayer.logparser.fileshandler,
- cz.martinbayer.logparser.logic
+ cz.martinbayer.logparser.logic,
+ cz.martinbayer.logparser.logic.handler,
+ cz.martinbayer.logparser.logic.regex

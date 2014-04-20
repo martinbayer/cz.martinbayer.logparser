@@ -1,11 +1,15 @@
 package cz.martinbayer.logparser.fileshandler;
 
+import cz.martinbayer.logparser.logic.ILogParserListener;
+
 public abstract class LogFileReceiver implements Runnable {
 
 	private LogFileSemaphoreWatchedStore semaphore;
 	private StringBuffer storedBuffer;
 
-	public LogFileReceiver(LogFileSemaphoreWatchedStore semaphore) {
+	protected ILogParserListener listener;
+
+	public void setSemaphore(LogFileSemaphoreWatchedStore semaphore) {
 		this.semaphore = semaphore;
 	}
 
@@ -33,6 +37,16 @@ public abstract class LogFileReceiver implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Listener must be set before the processing is started otherwise exception
+	 * is thrown
+	 * 
+	 * @param listener
+	 */
+	public void setListener(ILogParserListener listener) {
+		this.listener = listener;
 	}
 
 	protected abstract void releaseSources();
