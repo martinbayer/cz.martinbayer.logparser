@@ -2,19 +2,14 @@ package cz.martinbayer.logparser.logic.handler;
 
 import java.io.File;
 
+import cz.martinbayer.logparser.ILogEventListener;
 import cz.martinbayer.logparser.fileshandler.LogFileReader;
 import cz.martinbayer.logparser.fileshandler.LogFileReceiver;
 import cz.martinbayer.logparser.fileshandler.LogFileSemaphoreWatchedStore;
 import cz.martinbayer.logparser.logic.ILogParserListener;
 
-/**
- * 
- * @author Martin
- * 
- */
 public class LogHandler {
 
-	private static LogHandler instance;
 	private File[] filesToParse;
 	private String encoding = "UTF-8";
 	private LogFileReader logFileReader;
@@ -22,7 +17,7 @@ public class LogHandler {
 	private LogFileSemaphoreWatchedStore semaphore;
 
 	private LogHandler(File[] filesToParse, String encoding,
-			LogFileReceiver fileReceiver) {
+			LogFileReceiver fileReceiver, ILogEventListener statusListener) {
 		this.filesToParse = filesToParse;
 		if (encoding != null) {
 			this.encoding = encoding;
@@ -30,16 +25,15 @@ public class LogHandler {
 		semaphore = new LogFileSemaphoreWatchedStore(5);
 		logFileReader = new LogFileReader(semaphore, this.filesToParse,
 				this.encoding);
+		logFileReader.setEventListener(statusListener);
 		this.receiver = fileReceiver;
 		this.receiver.setSemaphore(semaphore);
 	}
 
 	public static synchronized LogHandler getInstance(File[] filesToParse,
-			String encoding, LogFileReceiver receiver) {
-		if (instance == null) {
-			instance = new LogHandler(filesToParse, encoding, receiver);
-		}
-		return instance;
+			String encoding, LogFileReceiver receiver,
+			ILogEventListener statusListener) {
+		return new LogHandler(filesToParse, encoding, receiver, statusListener);
 	}
 
 	/**
@@ -51,8 +45,8 @@ public class LogHandler {
 	public synchronized void doParse(ILogParserListener listener) {
 		semaphore.reset();
 		receiver.setListener(listener);
-		Thread fileReadThread = new Thread(logFileReader);
-		Thread logbackReceiverThread = new Thread(receiver);
+		Thread fileReadThread = new Thread(logFileReader, "reader");
+		Thread logbackReceiverThread = new Thread(receiver, "receiver");
 		fileReadThread.start();
 		logbackReceiverThread.start();
 
@@ -62,5 +56,9 @@ public class LogHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void stopImmediatelly() {
+		semaphore.stopImmediatelly();
 	}
 }

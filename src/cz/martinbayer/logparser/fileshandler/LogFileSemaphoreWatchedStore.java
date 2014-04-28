@@ -6,6 +6,7 @@ public class LogFileSemaphoreWatchedStore {
 	private boolean stopped = false;;
 	private int signalsCount = 0;
 	private int maxSignals = 0;
+	private boolean stoppedImmediatelly;
 
 	public LogFileSemaphoreWatchedStore(int maxSignals) {
 		if (maxSignals > 0) {
@@ -60,4 +61,13 @@ public class LogFileSemaphoreWatchedStore {
 		}
 	}
 
+	public void stopImmediatelly() {
+		synchronized (this) {
+			this.stoppedImmediatelly = true;
+		}
+	}
+
+	public final boolean isStoppedImmediatelly() {
+		return stoppedImmediatelly;
+	}
 }
